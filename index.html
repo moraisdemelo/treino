@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Treino PPL - Estilo App</title>
+  <style>
+    :root {
+      --primary: #ff3c3c;
+      --bg: #121212;
+      --card: #1f1f1f;
+      --text: #ffffff;
+      --accent: #ff7b00;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 1rem;
+    }
+    h1, h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    select, button {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: none;
+    }
+    select {
+      background: var(--card);
+      color: var(--text);
+    }
+    button {
+      background: var(--primary);
+      color: #fff;
+      font-weight: bold;
+    }
+    button:hover {
+      background: var(--accent);
+    }
+    .treino-container {
+      margin-top: 1.5rem;
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+    ul { list-style: none; padding: 0; }
+    li.exercicio {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #333;
+      padding: 1rem 0;
+    }
+    li.exercicio input[type=checkbox] {
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--primary);
+      border-radius: 6px;
+      background: var(--bg);
+      cursor: pointer;
+      position: relative;
+    }
+    li.exercicio input[type=checkbox]:checked::after {
+      content: '✓';
+      position: absolute;
+      top: -2px;
+      left: 4px;
+      font-size: 20px;
+      color: var(--primary);
+    }
+    li.exercicio input[type=checkbox]:checked + span {
+      color: #888;
+      text-decoration: line-through;
+      transition: 0.3s ease;
+    }
+    #timer, #timerInicio {
+      text-align: center;
+      font-size: 3rem;
+      margin: 1rem 0;
+    }
+    .buttons {
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+    }
+    @media(max-width: 500px) {
+      h1 { font-size: 1.5rem; }
+      .buttons { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Plano de Treino PPL</h1>
+  <select id="dia">
+    <option value="">Selecione o dia</option>
+    <option value="segunda">Push - Segunda</option>
+    <option value="terca">Pull - Terça</option>
+    <option value="quarta">Legs - Quarta</option>
+    <option value="quinta">Push - Quinta</option>
+    <option value="sexta">Pull - Sexta</option>
+    <option value="sabado">Legs - Sábado</option>
+    <option value="domingo">Descanso</option>
+  </select>
+
+  <div class="treino-container" id="treino"></div>
+
+  <h2>Cronômetro</h2>
+  <div id="timer">30</div>
+  <div class="buttons">
+    <button onclick="startTimer()">Iniciar</button>
+    <button onclick="pauseTimer()">Pausar</button>
+    <button onclick="resetTimer()">Resetar</button>
+  </div>
+
+  <h2>Cronômetro de Início de Treino</h2>
+  <div id="timerInicio">00:00</div>
+  <div class="buttons">
+    <button onclick="iniciarInicio()">Iniciar Treino</button>
+    <button onclick="pausarInicio()">Pausar</button>
+    <button onclick="resetarInicio()">Resetar</button>
+  </div>
+
+  <footer style="text-align:center; margin-top:2rem; color:#888; font-size:0.9rem;">
+    Feito por Estanis Morais
+  </footer>
+
+  <script>
+    let timer;
+    let time = 30;
+    let currentTime = time;
+    let running = false;
+
+    function startTimer() {
+      if (!running) {
+        running = true;
+        timer = setInterval(() => {
+          if (currentTime > 0) {
+            currentTime--;
+            document.getElementById("timer").innerText = currentTime;
+          } else {
+            clearInterval(timer);
+            running = false;
+            alert("Tempo encerrado!");
+          }
+        }, 1000);
+      }
+    }
+    function pauseTimer() {
+      clearInterval(timer);
+      running = false;
+    }
+    function resetTimer() {
+      clearInterval(timer);
+      currentTime = time;
+      document.getElementById("timer").innerText = currentTime;
+      running = false;
+    }
+
+    const treinoData = {
+      segunda: [
+        { nome: "Supino reto com barra" },
+        { nome: "Supino inclinado com halteres" },
+        { nome: "Desenvolvimento com halteres" },
+        { nome: "Elevação lateral" },
+        { nome: "Tríceps testa" },
+        { nome: "Tríceps corda no cross" },
+        { nome: "Abdômen infra com elevação de pernas" }
+      ],
+      terca: [
+        { nome: "Pulldown na polia alta" },
+        { nome: "Remada curvada barra" },
+        { nome: "Remada cavalinho" },
+        { nome: "Pulldown frente" },
+        { nome: "Rosca direta barra W" },
+        { nome: "Rosca martelo alternada" },
+        { nome: "Abdômen superior na máquina" }
+      ],
+      quarta: [
+        { nome: "Agachamento livre" },
+        { nome: "Leg press" },
+        { nome: "Cadeira extensora" },
+        { nome: "Afundo com halteres" },
+        { nome: "Panturrilha em pé" },
+        { nome: "Panturrilha sentada" },
+        { nome: "Abdômen inferior no banco declinado" }
+      ],
+      quinta: [
+        { nome: "Supino reto barra" },
+        { nome: "Supino inclinado máquina" },
+        { nome: "Desenvolvimento militar barra" },
+        { nome: "Elevação lateral unilateral" },
+        { nome: "Tríceps banco com peso" },
+        { nome: "Tríceps francês unilateral" },
+        { nome: "Abdominal oblíquo na polia" }
+      ],
+      sexta: [
+        { nome: "Pulldown na polia alta" },
+        { nome: "Remada curvada pegada supinada" },
+        { nome: "Remada baixa no triângulo" },
+        { nome: "Encolhimento de ombros" },
+        { nome: "Rosca concentrada" },
+        { nome: "Rosca 21" },
+        { nome: "Prancha isométrica" }
+      ],
+      sabado: [
+        { nome: "Mesa flexora unilateral" },
+        { nome: "Mesa flexora bilateral" },
+        { nome: "Agachamento búlgaro" },
+        { nome: "Stiff com halteres" },
+        { nome: "Glute bridge com barra" },
+        { nome: "Panturrilha leg press" },
+        { nome: "Abdominal com carga no cross" }
+      ],
+      domingo: [
+        { nome: "Descanso ou Cardio leve" },
+        { nome: "Alongamento e mobilidade" }
+      ]
+    };
+
+    document.getElementById("dia").addEventListener("change", function () {
+      const valor = this.value;
+      const container = document.getElementById("treino");
+      container.innerHTML = "";
+      if (treinoData[valor]) {
+        const lista = document.createElement("ul");
+        treinoData[valor].forEach(ex => {
+          const item = document.createElement("li");
+          item.className = "exercicio";
+          item.innerHTML = `<input type='checkbox'> <span>${ex.nome}</span>`;
+          lista.appendChild(item);
+        });
+        container.appendChild(lista);
+      }
+    });
+
+    let inicioIntervalo;
+    let segundosInicio = 0;
+    let rodandoInicio = false;
+
+    function formatarTempo(s) {
+      const min = Math.floor(s / 60).toString().padStart(2, '0');
+      const seg = (s % 60).toString().padStart(2, '0');
+      return `${min}:${seg}`;
+    }
+
+    function iniciarInicio() {
+      if (!rodandoInicio) {
+        rodandoInicio = true;
+        inicioIntervalo = setInterval(() => {
+          segundosInicio++;
+          document.getElementById("timerInicio").innerText = formatarTempo(segundosInicio);
+        }, 1000);
+      }
+    }
+    function pausarInicio() {
+      clearInterval(inicioIntervalo);
+      rodandoInicio = false;
+    }
+    function resetarInicio() {
+      clearInterval(inicioIntervalo);
+      segundosInicio = 0;
+      document.getElementById("timerInicio").innerText = "00:00";
+      rodandoInicio = false;
+    }
+  </script>
+</body>
+</html>
